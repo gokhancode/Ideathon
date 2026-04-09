@@ -99,6 +99,18 @@
   justify-content: center;
 }
 
+.popup-link.pitch {
+  background: linear-gradient(135deg, #9945ff, #14f195);
+  color: #fff;
+  border: none;
+  font-weight: 800;
+}
+
+.popup-link.pitch:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
 .popup-link.github {
   background: #1a1a2e;
   color: #e2e8f0;

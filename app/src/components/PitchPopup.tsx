@@ -35,6 +35,14 @@ export default function PitchPopup({ onClose }: { onClose: () => void }) {
 
         <div className="popup-links">
           <a
+            href="https://gamma.app/docs/DeciMap-tjgtdw2ed088vn2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="popup-link pitch"
+          >
+            View Pitch Deck
+          </a>
+          <a
             href="https://github.com/gokhancode/Ideathon"
             target="_blank"
             rel="noopener noreferrer"
