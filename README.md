@@ -1,5 +1,7 @@
 # DeciMap — Decentralized Noise Monitoring on Solana
 
+# [>>> LIVE DEMO: gkhn.ch/Ideathon <<<](https://gkhn.ch/Ideathon/)
+
 > **DePIN that turns every phone into a noise sensor. Crowdsourced, incentivized, on-chain.**
 
 Built at Superteam Career Day Ideathon, ETH Zurich — April 2026.
