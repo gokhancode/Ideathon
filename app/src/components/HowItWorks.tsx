@@ -105,6 +105,56 @@ export default function HowItWorks() {
         </div>
       </section>
 
+      <section className="security-section">
+        <h2>Anti-Fraud &amp; Security</h2>
+        <p style={{ color: "var(--text-dim)", marginBottom: 20, lineHeight: 1.6 }}>
+          Crowdsourced data is only valuable if it's trustworthy. DeciMap implements multiple layers
+          of on-chain and client-side fraud prevention.
+        </p>
+        <div className="security-grid">
+          <div className="security-card">
+            <div className="security-icon">&#128274;</div>
+            <h3>Stake-to-Report</h3>
+            <p>Reporters must stake <strong>0.01 SOL</strong> before submitting. Fraudulent reporters are slashed — making fake data economically irrational.</p>
+          </div>
+          <div className="security-card">
+            <div className="security-icon">&#128101;</div>
+            <h3>Cross-Validation</h3>
+            <p>Every report needs <strong>2+ nearby reporters</strong> to confirm. A lone fake reading can't pass consensus. Validators are also staked.</p>
+          </div>
+          <div className="security-card">
+            <div className="security-icon">&#9202;</div>
+            <h3>Rate Limiting</h3>
+            <p><strong>60-second cooldown</strong> per reporter per zone. Prevents spam flooding and makes bot attacks expensive (each report costs tx fees + time).</p>
+          </div>
+          <div className="security-card">
+            <div className="security-icon">&#128200;</div>
+            <h3>Outlier Detection</h3>
+            <p>Readings <strong>&gt;30 dB from zone average</strong> are auto-flagged. Flagged reports require extra validation before rewards are paid.</p>
+          </div>
+          <div className="security-card">
+            <div className="security-icon">&#128205;</div>
+            <h3>GPS + Timestamp</h3>
+            <p>Reports must include device GPS coordinates. Timestamps must be <strong>within 5 minutes</strong> of on-chain clock — prevents replaying old data.</p>
+          </div>
+          <div className="security-card">
+            <div className="security-icon">&#127911;</div>
+            <h3>Real Mic Only</h3>
+            <p>Web Audio API captures actual microphone input — no manual dB entry. Echo cancellation and noise suppression <strong>disabled</strong> for raw readings.</p>
+          </div>
+        </div>
+
+        <div className="security-future">
+          <h3>Future Layers (Phase 2+)</h3>
+          <ul>
+            <li><strong>WiFi fingerprinting</strong> — verify location via nearby access point BSSIDs</li>
+            <li><strong>Reputation decay</strong> — score degrades over time without consistent valid reports</li>
+            <li><strong>Hardware attestation</strong> — dedicated sensors with secure enclaves sign readings at chip level</li>
+            <li><strong>Statistical anomaly detection</strong> — ML model flags impossible readings (e.g., 30 dB at Zurich HB rush hour)</li>
+          </ul>
+        </div>
+      </section>
+
       <section className="revenue-section">
         <h2>Business Model</h2>
         <div className="revenue-grid">

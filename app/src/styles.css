@@ -807,6 +807,96 @@ body {
   line-height: 1.5;
 }
 
+/* ── Location Status ───────────────────────────────── */
+.location-status {
+  margin-bottom: 16px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.loc-ok {
+  color: var(--accent);
+}
+
+.loc-accuracy {
+  color: var(--text-dim);
+}
+
+.loc-pending {
+  color: var(--text-dim);
+}
+
+/* ── Security Section ──────────────────────────────── */
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.security-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.security-icon {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.security-card h3 {
+  color: var(--red);
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.security-card p {
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.security-future {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.security-future h3 {
+  font-size: 15px;
+  margin-bottom: 12px;
+  color: var(--text-dim);
+}
+
+.security-future ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.security-future li {
+  font-size: 13px;
+  color: var(--text-dim);
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.security-future li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--orange);
+}
+
 /* ── Responsive ────────────────────────────────────── */
 @media (max-width: 768px) {
   .header {
@@ -838,7 +928,8 @@ body {
 
   .problem-grid,
   .econ-grid,
-  .revenue-grid {
+  .revenue-grid,
+  .security-grid {
     grid-template-columns: 1fr;
   }
 

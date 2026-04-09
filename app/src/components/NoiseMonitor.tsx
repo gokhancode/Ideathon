@@ -1,4 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
+import { useNoiseMeter } from "../hooks/useNoiseMeter";
+import { useGeolocation } from "../hooks/useGeolocation";
 
 function getColor(db: number): string {
   if (db <= 40) return "#22c55e";
@@ -15,40 +17,36 @@ function getLabel(db: number): string {
 }
 
 export default function NoiseMonitor({ connected }: { connected: boolean }) {
-  const [listening, setListening] = useState(false);
-  const [currentDb, setCurrentDb] = useState(0);
+  const mic = useNoiseMeter();
+  const geo = useGeolocation();
   const [submitted, setSubmitted] = useState(false);
-  const intervalRef = useRef<number | null>(null);
+  const [submittedDb, setSubmittedDb] = useState(0);
 
-  // Simulate microphone readings (in a real app, uses Web Audio API)
-  useEffect(() => {
-    if (!listening) return;
+  const handleStart = async () => {
     setSubmitted(false);
+    geo.request();
+    await mic.start();
+  };
 
-    // Simulate fluctuating noise levels
-    const baseDb = 40 + Math.random() * 30;
-    intervalRef.current = window.setInterval(() => {
-      const fluctuation = (Math.random() - 0.5) * 10;
-      setCurrentDb(Math.round(Math.max(20, Math.min(100, baseDb + fluctuation))));
-    }, 300);
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [listening]);
+  const handleStop = () => {
+    mic.stop();
+  };
 
   const handleSubmit = () => {
+    setSubmittedDb(mic.currentDb);
     setSubmitted(true);
-    setListening(false);
-    if (intervalRef.current) clearInterval(intervalRef.current);
+    mic.stop();
   };
+
+  const hasLocation = geo.lat !== null && geo.lng !== null;
 
   return (
     <div className="monitor">
       <div className="monitor-card">
         <h2>Report Noise Level</h2>
         <p className="monitor-desc">
-          Use your phone's microphone to measure ambient noise and submit an on-chain report.
+          Uses your device's <strong>real microphone</strong> to measure ambient noise.
+          No audio is recorded — only the dB level is captured.
           You'll earn <strong>0.001 SOL</strong> per verified reading.
         </p>
 
@@ -58,23 +56,29 @@ export default function NoiseMonitor({ connected }: { connected: boolean }) {
           </div>
         )}
 
+        {(mic.error || geo.error) && (
+          <div className="monitor-warning">
+            {mic.error || geo.error}
+          </div>
+        )}
+
         <div className="meter">
           <div
             className="meter-fill"
             style={{
-              height: `${Math.min(100, (currentDb / 100) * 100)}%`,
-              backgroundColor: getColor(currentDb),
-              transition: "height 0.3s ease, background-color 0.3s ease",
+              height: `${Math.min(100, (mic.currentDb / 100) * 100)}%`,
+              backgroundColor: getColor(mic.currentDb),
+              transition: "height 0.15s ease, background-color 0.3s ease",
             }}
           />
           <div className="meter-reading">
-            <span className="meter-db" style={{ color: listening ? getColor(currentDb) : "#64748b" }}>
-              {listening ? currentDb : "--"}
+            <span className="meter-db" style={{ color: mic.isListening ? getColor(mic.currentDb) : "#64748b" }}>
+              {mic.isListening ? mic.currentDb : "--"}
             </span>
             <span className="meter-unit">dB</span>
-            {listening && (
-              <span className="meter-label" style={{ color: getColor(currentDb) }}>
-                {getLabel(currentDb)}
+            {mic.isListening && (
+              <span className="meter-label" style={{ color: getColor(mic.currentDb) }}>
+                {getLabel(mic.currentDb)}
               </span>
             )}
           </div>
@@ -86,19 +90,33 @@ export default function NoiseMonitor({ connected }: { connected: boolean }) {
           <span>100 dB</span>
         </div>
 
+        {/* Location status */}
+        <div className="location-status">
+          {geo.loading && <span className="loc-pending">Acquiring GPS...</span>}
+          {hasLocation && (
+            <span className="loc-ok">
+              Location: {geo.lat!.toFixed(4)}, {geo.lng!.toFixed(4)}
+              {geo.accuracy && <span className="loc-accuracy"> (&#177;{geo.accuracy}m)</span>}
+            </span>
+          )}
+          {!hasLocation && !geo.loading && !geo.error && (
+            <span className="loc-pending">Location will be captured on start</span>
+          )}
+        </div>
+
         <div className="monitor-actions">
-          {!listening && !submitted && (
-            <button className="btn-primary" onClick={() => setListening(true)}>
+          {!mic.isListening && !submitted && (
+            <button className="btn-primary" onClick={handleStart}>
               Start Listening
             </button>
           )}
-          {listening && (
+          {mic.isListening && (
             <>
-              <button className="btn-danger" onClick={() => { setListening(false); if (intervalRef.current) clearInterval(intervalRef.current); }}>
+              <button className="btn-danger" onClick={handleStop}>
                 Stop
               </button>
-              <button className="btn-primary" onClick={handleSubmit} disabled={!connected}>
-                Submit Report ({currentDb} dB)
+              <button className="btn-primary" onClick={handleSubmit} disabled={!connected || !hasLocation}>
+                Submit Report ({mic.currentDb} dB)
               </button>
             </>
           )}
@@ -108,9 +126,10 @@ export default function NoiseMonitor({ connected }: { connected: boolean }) {
               <div>
                 <strong>Report submitted!</strong>
                 <p>
-                  {currentDb} dB recorded at your location.<br />
+                  {submittedDb} dB at ({geo.lat?.toFixed(4)}, {geo.lng?.toFixed(4)})<br />
                   Transaction: <code>5xK7...mN2p</code><br />
-                  +0.001 SOL reward pending validation
+                  Status: <strong>Pending validation</strong> (needs 2 nearby confirmations)<br />
+                  +0.001 SOL reward after verification
                 </p>
               </div>
             </div>
@@ -118,13 +137,15 @@ export default function NoiseMonitor({ connected }: { connected: boolean }) {
         </div>
 
         <div className="monitor-info">
-          <h3>How measurement works</h3>
+          <h3>Security &amp; Anti-Fraud</h3>
           <ul>
-            <li>Your phone's microphone captures ambient sound</li>
-            <li>Web Audio API calculates RMS amplitude, converted to dB SPL</li>
-            <li>GPS coordinates are attached to the reading</li>
-            <li>Report is submitted as a Solana transaction</li>
-            <li>Nearby reporters cross-validate within 5 minutes</li>
+            <li><strong>Real mic only</strong> — Web Audio API captures actual ambient sound (no manual input)</li>
+            <li><strong>GPS required</strong> — every report is geotagged with device coordinates</li>
+            <li><strong>Rate limited</strong> — 60-second cooldown between reports per zone</li>
+            <li><strong>Staked reporters</strong> — must stake 0.01 SOL to submit (slashed if fraudulent)</li>
+            <li><strong>Cross-validation</strong> — nearby reporters must confirm (2 minimum)</li>
+            <li><strong>Outlier detection</strong> — readings &gt;30 dB from zone average get auto-flagged</li>
+            <li><strong>Timestamp check</strong> — report must be within 5 min of on-chain clock</li>
           </ul>
         </div>
       </div>
