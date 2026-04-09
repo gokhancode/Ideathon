@@ -84,9 +84,9 @@ export default function NoiseMap() {
       div.innerHTML = `
         <div style="background:rgba(0,0,0,0.85);padding:10px 14px;border-radius:8px;color:#fff;font-family:Inter,sans-serif;font-size:12px">
           <div style="font-weight:600;margin-bottom:6px">Noise Level</div>
-          <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#22c55e;margin-right:6px"></span> &le;40 dB — Quiet</div>
-          <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#eab308;margin-right:6px"></span> 41-55 dB — Moderate</div>
-          <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#f97316;margin-right:6px"></span> 56-70 dB — Loud</div>
+          <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#22c55e;margin-right:6px"></span> &le;40 dB — Library</div>
+          <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#eab308;margin-right:6px"></span> 41-55 dB — Conversation</div>
+          <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#f97316;margin-right:6px"></span> 56-70 dB — Traffic</div>
           <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#ef4444;margin-right:6px"></span> &gt;70 dB — Violation</div>
           <div style="margin-top:6px;color:#94a3b8;font-size:10px">Swiss limit: 55 dB day / 45 dB night</div>
         </div>
