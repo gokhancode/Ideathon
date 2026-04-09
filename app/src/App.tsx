@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NoiseMap from "./components/NoiseMap";
 import Dashboard from "./components/Dashboard";
 import ReportList from "./components/ReportList";
 import NoiseMonitor from "./components/NoiseMonitor";
 import HowItWorks from "./components/HowItWorks";
+import PitchPopup from "./components/PitchPopup";
 import "./styles.css";
 
 type Tab = "map" | "dashboard" | "monitor" | "how";
@@ -11,6 +12,7 @@ type Tab = "map" | "dashboard" | "monitor" | "how";
 export default function App() {
   const [tab, setTab] = useState<Tab>("map");
   const [walletConnected, setWalletConnected] = useState(false);
+  const [showPopup, setShowPopup] = useState(true);
 
   return (
     <div className="app">
@@ -45,6 +47,8 @@ export default function App() {
           {walletConnected ? "7xKp...3mNv" : "Connect Wallet"}
         </button>
       </header>
+
+      {showPopup && <PitchPopup onClose={() => setShowPopup(false)} />}
 
       <main className="main">
         {tab === "map" && (
